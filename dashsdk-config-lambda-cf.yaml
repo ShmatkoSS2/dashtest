@@ -272,7 +272,7 @@ Resources:
     Properties:
       Handler: src/functions/HelloWorld.handler
       Role:
-        Fn::GetAtt: lambdaExecutionRole.Arn
+        Fn::GetAtt: lambdaExecutionRole.Arn22
       Runtime: "nodejs14.x"
       MemorySize: 1280
       Timeout: 5
