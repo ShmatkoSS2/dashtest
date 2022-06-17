@@ -5,8 +5,8 @@ on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
     branches:
-      - main
-      - feature/*
+    - main
+    - feature/*
   pull_request:
     branches:
       - main
@@ -27,24 +27,24 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Check out Repository
         uses: actions/checkout@v2
-
+        
       - name: Extract branch name
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
-
+      
       #Make HTTP - POST Request
       - name: HTTP - POST Request
         id: dashPost
         uses: fjogeleit/http-request-action@master
         with:
-          url: "https://complysource.dashsdk.com/scan"
-          method: "POST"
+          url: 'https://complysource.dashsdk.com/scan'
+          method: 'POST'
           data: '{  "Repository": "${{ github.repository }}", "Author": "${{ github.event.pusher.name }}", "Branch": "${{ steps.extract_branch.outputs.branch }}", "SHA": "${{ github.sha }}", "Message": "${{ github.event.head_commit.message }}", "Token": "${{ secrets.DASH_REPO_TOKEN }}", "OrganizationCode": "${{ secrets.DASH_ORGANIZATION_CODE }}", "LicenceKey": "${{ secrets.DASH_LICENCE_KEY }}", "AccessToken": "${{ secrets.DASH_ACCESS_TOKEN }}", "DashUrl": "${{ secrets.DASH_API_ENDPOINT }}" }'
-
+        
       - name: Failed response
         if: ${{ fromJson(steps.dashPost.outputs.response).statusCode != 200 }}
         run: echo ${{ steps.dashPost.outputs.response }} && exit -1
-
+      
       - name: Response
         run: echo ${{ steps.dashPost.outputs.response }}
